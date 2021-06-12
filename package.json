@@ -11,6 +11,10 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
+  "dependencies": {
+    "cac": "^6.7.3",
+    "enquirer": "^2.3.6"
+  },
   "devDependencies": {
     "eslint": "^7.28.0",
     "eslint-config-standard": "^16.0.3",

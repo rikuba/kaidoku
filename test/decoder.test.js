@@ -30,6 +30,16 @@ describe('Base64', () => {
     })
   }
 
+  it('should decode base64 (more than one result)', () => {
+    const results = decode('8Km4vQ==')
+    assert(results.length > 1)
+
+    const result = results.find((result) => result.encoding === 'utf-8')
+    assert(result !== undefined)
+
+    assert.strictEqual(result.text, '𩸽')
+  })
+
   it('should fail to decode random text', () => {
     const text = 'abcdefgh1234'
     const results = decode(text)
