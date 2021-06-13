@@ -41,7 +41,63 @@ describe('Base64', () => {
 
     assert.strictEqual(result.text, '𩸽')
   })
+})
 
+describe('Quoted Printable', () => {
+  const encodedTexts = {
+    'euc-jp': `=A4=B3=A4=EC=A4=CF=A5=C6=A5=B9=A5=C8=CA=B8=BD=F1=A4=C7=A4=B9=A1=A3
+
+=A1=A6Base64
+=A1=A6Quoted Printable
+=A1=A6=A5=D1=A1=BC=A5=BB=A5=F3=A5=C8=A5=A8=A5=F3=A5=B3=A1=BC=A5=C7=A5=A3=
+=A5=F3=A5=B0
+
+=A4=A4=A4=BA=A4=EC=A4=AB=A4=CE=B7=C1=BC=B0=A4=CB=A4=E8=A4=EA=C9=E4=B9=E6=
+=B2=BD=A4=B5=A4=EC=A4=C6=A4=A4=A4=DE=A4=B9=A1=A3
+`,
+    'iso-2022-jp': `=1B$B$3$l$O%F%9%HJ8=3Dq$G$9!#=1B(B
+
+=1B$B!&=1B(BBase64
+=1B$B!&=1B(BQuoted Printable
+=1B$B!&%Q!<%;%s%H%(%s%3!<%G%#%s%0=1B(B
+
+=1B$B$$$:$l$+$N7A<0$K$h$jId9f2=3D$5$l$F$$$^$9!#=1B(B
+`,
+    shift_jis: `=82=B1=82=EA=82=CD=83e=83X=83g=95=B6=8F=91=82=C5=82=B7=81B
+
+=81EBase64
+=81EQuoted Printable
+=81E=83p=81[=83Z=83=93=83g=83G=83=93=83R=81[=83f=83B=83=93=83O
+
+=82=A2=82=B8=82=EA=82=A9=82=CC=8C\`=8E=AE=82=C9=82=E6=82=E8=95=84=8D=86=89=
+=BB=82=B3=82=EA=82=C4=82=A2=82=DC=82=B7=81B
+`,
+    'utf-8': `=E3=81=93=E3=82=8C=E3=81=AF=E3=83=86=E3=82=B9=E3=83=88=E6=96=87=E6=9B=B8=
+=E3=81=A7=E3=81=99=E3=80=82
+
+=E3=83=BBBase64
+=E3=83=BBQuoted Printable
+=E3=83=BB=E3=83=91=E3=83=BC=E3=82=BB=E3=83=B3=E3=83=88=E3=82=A8=E3=83=B3=
+=E3=82=B3=E3=83=BC=E3=83=87=E3=82=A3=E3=83=B3=E3=82=B0
+
+=E3=81=84=E3=81=9A=E3=82=8C=E3=81=8B=E3=81=AE=E5=BD=A2=E5=BC=8F=E3=81=AB=
+=E3=82=88=E3=82=8A=E7=AC=A6=E5=8F=B7=E5=8C=96=E3=81=95=E3=82=8C=E3=81=A6=
+=E3=81=84=E3=81=BE=E3=81=99=E3=80=82
+`
+  }
+
+  for (const encoding of encodings) {
+    it(`should decode quoted-printable (${encoding})`, () => {
+      const encoded = encodedTexts[encoding]
+      const results = decode(encoded)
+      assert.strictEqual(results.length, 1)
+      assert.strictEqual(results[0].encoding, encoding)
+      assert.strictEqual(results[0].text, sampleText)
+    })
+  }
+})
+
+describe('Failure', () => {
   it('should fail to decode random text', () => {
     const text = 'abcdefgh1234'
     const results = decode(text)
