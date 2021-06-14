@@ -95,6 +95,42 @@ describe('Quoted Printable', () => {
       assert.strictEqual(results[0].text, sampleText)
     })
   }
+
+  it('should decode quoted-printable (more than one result)', () => {
+    const results = decode('=F0=A9=B8=BD')
+    assert(results.length > 1)
+
+    const result = results.find((result) => result.encoding === 'utf-8')
+    assert(result !== undefined)
+
+    assert.strictEqual(result.text, '𩸽')
+  })
+})
+
+describe('MIME', () => {
+  it('should decode MIME B (euc-jp)', () => {
+    const results = decode('=?EUC-JP?B?pLOk7KTPpcaluaXIzdGkzsq4vs+kx6S5oaM=?=')
+    assert.strictEqual(results.length, 1)
+    assert.strictEqual(results[0].text, 'これはテスト用の文章です。')
+  })
+
+  it('should decode MIME B (shift_jis)', () => {
+    const results = decode('=?Shift_JIS?B?grGC6oLNg2WDWINnl3CCzJW2j82CxYK3gUI=?=')
+    assert.strictEqual(results.length, 1)
+    assert.strictEqual(results[0].text, 'これはテスト用の文章です。')
+  })
+
+  it('should decode MIME Q (iso-2022-jp)', () => {
+    const results = decode('Subject: =?ISO-2022-JP?Q?iTunes_Movie_=1B$B%K%e!<%j%j!<%9$HCmL\\:nIJ=1B(B?=')
+    assert.strictEqual(results.length, 1)
+    assert.strictEqual(results[0].text, 'Subject: iTunes Movie ニューリリースと注目作品')
+  })
+
+  it('should decode MIME Q (utf-8)', () => {
+    const results = decode('Subject: =?UTF-8?B?5LuK5pel44GvNuaciDE05pel44CBTW9uZGF544Gn44GZ44CC?=')
+    assert.strictEqual(results.length, 1)
+    assert.strictEqual(results[0].text, 'Subject: 今日は6月14日、Mondayです。')
+  })
 })
 
 describe('Failure', () => {
