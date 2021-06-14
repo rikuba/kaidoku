@@ -3,16 +3,16 @@
 const { cac } = require('cac')
 const { prompt } = require('enquirer')
 const fs = require('fs')
-const { decode } = require('./lib/decoder')
+const { decode, decodeBuffer } = require('./lib/decoder')
 
 function run () {
   const cli = cac()
   cli.option('-i, --input <file>', '指定されたファイルの内容を解析する')
   cli.option('-o, --output <file>', '指定されたファイルに解析結果を出力する')
 
-  cli.command('[string]', '解析する文字列').action((input, options) => {
+  cli.command('[string]', '解析する文字列').action(async (input, options) => {
     if (options.input) {
-      input = fs.readFileSync(options.input, { encoding: 'utf-8' })
+      input = await readInputFile(options.input)
     }
 
     decodeInput(input, options).catch((e) => {
@@ -27,6 +27,20 @@ function run () {
 }
 
 /**
+ * @param {string} file
+ */
+async function readInputFile (file) {
+  const buffer = fs.readFileSync(file)
+  const results = decodeBuffer(buffer)
+  if (results.length === 1) {
+    return results[0].text
+  }
+
+  const result = await selectDecodingResult(results, '入力ファイルの文字コードを選択してください')
+  return result.text
+}
+
+/**
  * @param {string} input
  * @param {Object} options
  */
@@ -37,7 +51,12 @@ async function decodeInput (input, options) {
     throw new Error('解読できませんでした')
   }
 
-  const result = results.length === 1 ? results[0] : await selectDecodingResult(results)
+  let result
+  if (results.length === 1) {
+    result = results[0]
+  } else {
+    result = await selectDecodingResult(results, '適切なデコード結果を選択してください')
+  }
 
   if (options.output) {
     fs.writeFileSync(options.output, result.text, { encoding: 'utf-8' })
@@ -49,7 +68,7 @@ async function decodeInput (input, options) {
 /**
  * @param {Array<import('./lib/decoder').DecodingResult>} results
  */
-async function selectDecodingResult (results) {
+async function selectDecodingResult (results, message) {
   const choices = results.map((result) => {
     const sample = result.text.replace(/\t\n\f\r/g, ' ').slice(0, 60)
     return {
@@ -61,7 +80,7 @@ async function selectDecodingResult (results) {
   const answers = await prompt({
     type: 'select',
     name: 'encoding',
-    message: '適切なデコード結果を選択してください',
+    message,
     choices,
     result () {
       return this.focused.value
