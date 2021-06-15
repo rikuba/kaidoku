@@ -13,6 +13,13 @@ function run () {
   cli.command('[string]', '解析する文字列').action(async (input, options) => {
     if (options.input) {
       input = await readInputFile(options.input)
+    } else if (!input) {
+      const result = await prompt({
+        type: 'input',
+        name: 'input',
+        message: '解読する文字列を入力'
+      })
+      input = result.input
     }
 
     decodeInput(input, options).catch((e) => {
