@@ -133,6 +133,27 @@ describe('MIME', () => {
   })
 })
 
+describe('Percent', () => {
+  const sampleText = 'q=これはテスト用の文章です。'
+
+  const encodedTexts = {
+    'euc-jp': 'q=%A4%B3%A4%EC%A4%CF%A5%C6%A5%B9%A5%C8%CD%D1%A4%CE%CA%B8%BE%CF%A4%C7%A4%B9%A1%A3',
+    'iso-2022-jp': 'q=%1B%24B%243%24l%24O%25F%259%25HMQ%24NJ8>O%24G%249!%23%1B(B',
+    shift_jis: 'q=%82%B1%82%EA%82%CD%83e%83X%83g%97p%82%CC%95%B6%8F%CD%82%C5%82%B7%81B',
+    'utf-8': 'q=%E3%81%93%E3%82%8C%E3%81%AF%E3%83%86%E3%82%B9%E3%83%88%E7%94%A8%E3%81%AE%E6%96%87%E7%AB%A0%E3%81%A7%E3%81%99%E3%80%82'
+  }
+
+  for (const encoding of encodings) {
+    it(`should decode Percent-encoding (${encoding})`, () => {
+      const encoded = encodedTexts[encoding]
+      const results = decode(encoded)
+      assert.strictEqual(results.length, 1)
+      assert.strictEqual(results[0].encoding, encoding)
+      assert.strictEqual(results[0].text, sampleText)
+    })
+  }
+})
+
 describe('Failure', () => {
   it('should fail to decode random text', () => {
     const text = 'abcdefgh1234'
