@@ -7,10 +7,10 @@ const { decode, decodeBuffer } = require('./lib/decoder')
 
 function run () {
   const cli = cac()
-  cli.option('-i, --input <file>', '指定されたファイルの内容を解析する')
-  cli.option('-o, --output <file>', '指定されたファイルに解析結果を出力する')
+  cli.option('-i, --input <file>', '指定されたファイルの内容を解読する')
+  cli.option('-o, --output <file>', '指定されたファイルに解読結果を出力する')
 
-  cli.command('[string]', '解析する文字列').action(async (input, options) => {
+  cli.command('[string]', '解読する文字列').action(async (input, options) => {
     if (options.input) {
       input = await readInputFile(options.input)
     } else if (!input) {
