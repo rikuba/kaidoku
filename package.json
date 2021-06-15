@@ -1,16 +1,25 @@
 {
-  "name": "kaidoku",
+  "name": "@rikuba/kaidoku",
   "version": "1.0.0",
-  "description": "",
+  "description": "Offline decoder",
+  "keywords": ["decode"],
+  "homepage": "https://github.com/rikuba/kaidoku",
+  "bugs": {
+    "url": "https://github.com/rikuba/kaidoku/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rikuba/kaidoku.git"
+  },
+  "author": "rikuba",
+  "license": "MIT",
+  "main": "cli.js",
   "bin": {
     "kaidoku": "cli.js"
   },
   "scripts": {
     "test": "mocha test/"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "cac": "^6.7.3",
     "enquirer": "^2.3.6"
