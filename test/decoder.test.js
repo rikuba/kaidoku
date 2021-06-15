@@ -154,6 +154,14 @@ describe('Percent', () => {
   }
 })
 
+describe('HTML entities', () => {
+  it('should decode HTML entities', () => {
+    const results = decode('今日は&#171581;を見つけた。')
+    assert.strictEqual(results.length, 1)
+    assert.strictEqual(results[0].text, '今日は𩸽を見つけた。')
+  })
+})
+
 describe('Failure', () => {
   it('should fail to decode random text', () => {
     const text = 'abcdefgh1234'
