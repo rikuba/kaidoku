@@ -16,7 +16,7 @@ function run () {
     }
 
     decodeInput(input, options).catch((e) => {
-      console.error(e)
+      console.error(e.message)
       process.exit(1)
     })
   })
